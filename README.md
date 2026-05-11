@@ -12,13 +12,14 @@ Assess how well local models can bridge the gap between theoretical model descri
 - Identification of implementation details not explicitly stated in the paper
 
 ## 🤖 Models Evaluated
-| Model | Performance Summary |
-|:---|:---|
-| **Qwen 3.6 35B A3B** | Standout performer. Achieved high accuracy after iterative refinement, with minor remaining errors primarily related to legacy function attribution and initialization details. Fast inference. |
-| **Qwen 3.6 27B** | Also assessed. Produced reasonable baseline results, demonstrating solid structural understanding but requiring more extensive correction than the 35B variant. |
-| **Gemma 4 26B** | Generated initial mappings requiring substantial correction, though demonstrated good grasp of the simulation pipeline. |
-| **Nemotron Nano** | Delivered reasonable baseline outputs. |
-| **Gemma 4 31B** | Attempted but exceeded context/VRAM limits, resulting in inference crashes. |
+| Model | Performance Summary | Quantization and Flags |
+|:---|:---|:---|
+| **Qwen 3.6 35B A3B** | Standout performer. Achieved high accuracy after iterative refinement, with minor remaining errors primarily related to legacy function attribution and initialization details. Fast inference. | ./llama-server -hf unsloth/Qwen3.6-35B-A3B-GGUF:UD-Q4_K_XL -ngl 99 --split-mode layer --tensor-split 1,1.12 --flash-attn on --ctx-size 262144 --parallel 1 --cache-type-k q8_0 --cache-type-v q8_0 --threads 16 --host 127.0.0.1 --port 8080 |
+| **Qwen 3.6 27B** | Also assessed. Produced reasonable baseline results, demonstrating solid structural understanding but requiring more extensive correction than the 35B variant. | ./llama-server -hf unsloth/Qwen3.6-27B-GGUF:Q4_K_M -ngl 99 --split-mode layer --tensor-split 1,1.12 --flash-attn on --ctx-size 220000 --parallel 1 --cache-type-k q8_0 --cache-type-v q8_0 --threads 16 --host 127.0.0.1 --port 8080 |
+| **Gemma 4 26B** | Generated initial mappings requiring substantial correction, though demonstrated good grasp of the simulation pipeline. | ./llama-server -hf unsloth/gemma-4-26B-A4B-it-GGUF:UD-Q4_K_XL -ngl 99 --split-mode layer --tensor-split 1,1.12 --flash-attn on --ctx-size 256000 --parallel 1 --cache-type-k q8_0 --cache-type-v q8_0 --threads 16 --host 127.0.0.1 --port 8080 |
+| **Nemotron Nano** | Delivered reasonable baseline outputs. | ./llama-server -hf unsloth/Nemotron-3-Nano-30B-A3B-GGUF:UD-Q4_K_XL -ngl 99 --split-mode layer --tensor-split 1,1.12 --flash-attn on --ctx-size 256000 --parallel 1 --cache-type-k q8_0 --cache-type-v q8_0 --threads 16 --host 127.0.0.1 --port 8080 |
+| **Gemma 4 31B** | Attempted but exceeded context/VRAM limits, resulting in inference crashes. | N/A |
+
 
 ## 📊 Dataset & Experimental Setup
 - **Source Material**: Research paper, mathematical supplement, two simulation notebooks (`.ipynb`), and two Python utility scripts (`.py`).
